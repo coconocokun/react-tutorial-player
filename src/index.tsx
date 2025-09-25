@@ -583,51 +583,53 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
-      <div
-        ref={videoContainerRef}
-        className="relative mx-auto w-full bg-black rounded-lg overflow-hidden shadow-2xl border border-white/10"
-        style={{ aspectRatio: videoAspectRatio }}
-      >
-        <ReactPlayer
-          ref={videoRef}
-          src={videoUrl}
-          playing={isPlaying}
-          onProgress={(e) => handleReady(e.currentTarget)}
-          onDurationChange={(e) => handleDuration(e.currentTarget.duration)}
-          onTimeUpdate={(e) => handleProgress(e.currentTarget)}
-          onEnded={handleVideoEnded}
-          width="100%"
-          height="100%"
-          className="absolute top-0 left-0"
-        />
+      <div className="relative group">
+        <div
+          ref={videoContainerRef}
+          className="relative mx-auto w-full bg-black rounded-lg overflow-hidden shadow-2xl border border-white/10"
+          style={{ aspectRatio: videoAspectRatio }}
+        >
+          <ReactPlayer
+            ref={videoRef}
+            src={videoUrl}
+            playing={isPlaying}
+            onProgress={(e) => handleReady(e.currentTarget)}
+            onDurationChange={(e) => handleDuration(e.currentTarget.duration)}
+            onTimeUpdate={(e) => handleProgress(e.currentTarget)}
+            onEnded={handleVideoEnded}
+            width="100%"
+            height="100%"
+            className="absolute top-0 left-0"
+          />
 
-        {!hasStarted && !isFinished && (
-          <div className="absolute inset-0 bg-gradient-to-br from-black/70 to-black/50 backdrop-blur-sm flex items-center justify-center">
-            <button
-              onClick={handleStart}
-              className="flex items-center gap-3 px-10 py-5 text-white font-bold rounded-2xl text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl"
-              style={{ background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})` }}
-            >
-              <Play className="w-6 h-6" /> {labels.start}
-            </button>
-          </div>
-        )}
-
-        {renderTutorialOverlay()}
-
-        {isFinished && (
-          <div className="absolute inset-0 bg-gradient-to-br from-black/70 to-black/50 backdrop-blur-sm flex items-center justify-center">
-            <div className="flex flex-col text-center items-center">
-              <h3 className="text-3xl font-bold text-white mb-6">{labels.complete}</h3>
+          {!hasStarted && !isFinished && (
+            <div className="absolute inset-0 bg-gradient-to-br from-black/70 to-black/50 backdrop-blur-sm flex items-center justify-center">
               <button
-                onClick={handleReplay}
-                className="flex items-center gap-3 px-8 py-4 bg-green-500 text-white font-bold rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl"
+                onClick={handleStart}
+                className="flex items-center gap-3 px-10 py-5 text-white font-bold rounded-2xl text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl"
+                style={{ background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})` }}
               >
-                <RefreshCw className="w-6 h-6" /> {labels.replay}
+                <Play className="w-6 h-6" /> {labels.start}
               </button>
             </div>
-          </div>
-        )}
+          )}
+
+          {renderTutorialOverlay()}
+
+          {isFinished && (
+            <div className="absolute inset-0 bg-gradient-to-br from-black/70 to-black/50 backdrop-blur-sm flex items-center justify-center">
+              <div className="flex flex-col text-center items-center">
+                <h3 className="text-3xl font-bold text-white mb-6">{labels.complete}</h3>
+                <button
+                  onClick={handleReplay}
+                  className="flex items-center gap-3 px-8 py-4 bg-green-500 text-white font-bold rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl"
+                >
+                  <RefreshCw className="w-6 h-6" /> {labels.replay}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {showTimeline && tutorialData && (
