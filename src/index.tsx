@@ -421,7 +421,7 @@ const getSpeechBubbleTargetStyle = (
 // =================================================================
 // MAIN COMPONENT
 // =================================================================
-export const InteractiveVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
+export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
   videoSource,
   tutorialData,
   labels: customLabels,

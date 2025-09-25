@@ -1,7 +1,11 @@
 {
   "name": "react-tutorial-video",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A React component to play videos with interactive overlays based on a JSON configuration.",
+  "repository": {
+    "url": "git+https://github.com/coconocokun/react-tutorial-player",
+    "type": "git"
+  },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
