@@ -34,7 +34,7 @@ npm install react-tutorial-video
 
 ## 🚀 Usage
 
-The component requires two main props: `videoSource` and `tutorialData`.
+The component requires two main props: `videoSource` and `TutorialJsonData`.
 
 ### Basic Example
 
@@ -42,14 +42,13 @@ Here's a simple example using a video URL and an inline JSON object.
 
 ```jsx
 import React from "react";
-import { TutorialVideoPlayer } from "react-tutorial-video";
-import type { TutorialData } from "react-tutorial-video/dist/types";
+import { TutorialVideoPlayer, TutorialJsonData } from "react-tutorial-video";
 
 // The video you want to play
 const videoUrl = "https://vimeo.com/your-video-id";
 
 // The configuration for the tutorial steps
-const tutorialData: TutorialData = {
+const TutorialJsonData: TutorialJsonData = {
   version: "1.1",
   stopPoints: [
     {
@@ -86,7 +85,7 @@ const tutorialData: TutorialData = {
 function MyTutorial() {
   return (
     <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-      <TutorialVideoPlayer videoSource={videoUrl} tutorialData={tutorialData} />
+      <TutorialVideoPlayer videoSource={videoUrl} TutorialJsonData={TutorialJsonData} />
     </div>
   );
 }
@@ -100,12 +99,11 @@ This example shows a more realistic scenario where you might load a video `File`
 
 ```jsx
 import React, { useState } from "react";
-import { TutorialVideoPlayer } from "react-tutorial-video";
-import type { TutorialData } from "react-tutorial-video/dist/types";
+import { TutorialVideoPlayer, TutorialJsonData } from "react-tutorial-video";
 
 function AdvancedPlayer() {
   const [videoFile, setVideoFile] = (useState < File) | (null > null);
-  const [jsonData, setJsonData] = (useState < TutorialData) | (null > null);
+  const [jsonData, setJsonData] = (useState < TutorialJsonData) | (null > null);
 
   // In a real app, you would use file inputs to set these state variables.
   // For this example, we'll assume they are loaded.
@@ -117,7 +115,7 @@ function AdvancedPlayer() {
       {videoFile && jsonData ? (
         <TutorialVideoPlayer
           videoSource={videoFile}
-          tutorialData={jsonData}
+          TutorialJsonData={jsonData}
           // Customize the player's colors to a green theme
           colors={{
             primary: "#10B981", // green-500
@@ -152,7 +150,7 @@ function AdvancedPlayer() {
 | Prop                 | Type                        | Required | Default                                        | Description                                                                                             |
 | -------------------- | --------------------------- | -------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | `videoSource`        | `string \| File`            | Yes      | `undefined`                                    | The URL of the video or a `File` object from an input.                                                  |
-| `tutorialData`       | `TutorialData`              | Yes      | `undefined`                                    | The parsed JSON object containing the tutorial steps.                                                   |
+| `TutorialJsonData`   | `TutorialJsonData`          | Yes      | `undefined`                                    | The parsed JSON object containing the tutorial steps.                                                   |
 | `labels`             | `object`                    | No       | `{ start, continue, complete, replay }`        | An object with string values to override the default text for UI elements.                              |
 | `colors`             | `object`                    | No       | `{ primary: '#3B82F6', secondary: '#8B5CF6' }` | An object with `primary` and `secondary` hex color strings to theme the player.                         |
 | `showTimeline`       | `boolean`                   | No       | `true`                                         | If `false`, the segmented progress timeline below the video will be hidden.                             |
@@ -162,10 +160,10 @@ function AdvancedPlayer() {
 
 ### Importing Types
 
-If you are using TypeScript, you can import the `TutorialData` type for type safety.
+If you are using TypeScript, you can import the `TutorialJsonData` type for type safety.
 
 ```typescript
-import type { TutorialData } from "react-tutorial-video/dist/types";
+import type { TutorialJsonData } from "react-tutorial-video";
 ```
 
 ## 🎨 Styling

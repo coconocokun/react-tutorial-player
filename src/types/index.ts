@@ -41,8 +41,3 @@ export interface StopPoint {
   time: number;
   areas: InteractionArea[];
 }
-
-export interface TutorialData {
-  version: string;
-  stopPoints: StopPoint[];
-}

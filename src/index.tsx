@@ -3,7 +3,7 @@
 import React, { useState, useRef, useMemo, useEffect, useLayoutEffect, useCallback } from "react";
 import ReactPlayer from "react-player";
 import { RefreshCw, MoveRight, Play } from "lucide-react";
-import { InteractionArea, StopPoint, TutorialData } from "./types";
+import { InteractionArea, StopPoint } from "./types";
 
 // Helper components (SpeechBubble, SegmentedTimeline, etc.) are moved inside or below the main component.
 // For a larger library, you would place them in `src/components/` and import them.
@@ -11,11 +11,16 @@ import { InteractionArea, StopPoint, TutorialData } from "./types";
 // =================================================================
 // PROPS DEFINITION
 // =================================================================
+export interface TutorialJsonData {
+  version: "1.1";
+  stopPoints: StopPoint[];
+}
+
 export interface TutorialVideoPlayerProps {
   /** The source of the video. Can be a URL string or a File object. */
   videoSource: string | File;
   /** The parsed JSON data for the interactive tutorial. */
-  tutorialData: TutorialData;
+  tutorialData: TutorialJsonData;
   /**
    * Custom labels for UI elements.
    * @default start: "Start Interactive Tutorial", continue: "Continue", complete: "Tutorial Complete!", replay: "Play Again"
