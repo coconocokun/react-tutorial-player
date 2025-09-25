@@ -24,6 +24,11 @@ Check out the live demo to see the player in action and use the accompanying edi
 - **Segmented Timeline:** A visual progress bar that shows the tutorial's stop points.
 - **Built with TypeScript:** Fully typed for a great developer experience.
 
+## ⚠️ Prerequisites & Compatibility
+
+- **React:** This component requires `react` version 16.8 or higher.
+- **Styling (Tailwind CSS):** The component's built-in styles were created with **Tailwind CSS v3**. While it may work in other environments, using it in a project with a different major version of Tailwind (like v4) or another CSS framework may result in visual inconsistencies.
+
 ## 📦 Installation
 
 Install the package using npm:
@@ -166,10 +171,12 @@ If you are using TypeScript, you can import the `TutorialJsonData` type for type
 import type { TutorialJsonData } from "react-tutorial-video";
 ```
 
-## 🎨 Styling
-
-This component is styled using **Tailwind CSS**. The class names are compiled and included directly in the component's JavaScript bundle. This ensures it works out-of-the-box without requiring you to set up Tailwind or import a separate stylesheet.
-
 ## 📜 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📑 ToDo
+
+- [ ] Add custom styling
+- [ ] Remove tailwindcss dependencies
+- [ ] Include editor
