@@ -2,6 +2,7 @@ import React, { useState, useRef, useMemo, useEffect, useLayoutEffect, useCallba
 import ReactPlayer from "react-player";
 import { RefreshCw, MoveRight, Play } from "lucide-react";
 import { InteractionArea, StopPoint } from "./types";
+import "./output.css";
 
 // Helper components (SpeechBubble, SegmentedTimeline, etc.) are moved inside or below the main component.
 // For a larger library, you would place them in `src/components/` and import them.

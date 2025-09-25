@@ -24,11 +24,6 @@ Check out the live demo to see the player in action and use the accompanying edi
 - **Segmented Timeline:** A visual progress bar that shows the tutorial's stop points.
 - **Built with TypeScript:** Fully typed for a great developer experience.
 
-## ⚠️ Prerequisites & Compatibility
-
-- **React:** This component requires `react` version 16.8 or higher.
-- **Styling (Tailwind CSS):** The component's built-in styles were created with **Tailwind CSS v3**. While it may work in other environments, using it in a project with a different major version of Tailwind (like v4) or another CSS framework may result in visual inconsistencies.
-
 ## 📦 Installation
 
 Install the package using npm:
@@ -40,6 +35,7 @@ npm install react-tutorial-video
 ## 🚀 Usage
 
 The component requires two main props: `videoSource` and `TutorialJsonData`.
+Also you **must include** the css file: `react-tutorial-video/dist/index.css`
 
 ### Basic Example
 
@@ -48,6 +44,7 @@ Here's a simple example using a video URL and an inline JSON object.
 ```jsx
 import React from "react";
 import { TutorialVideoPlayer, TutorialJsonData } from "react-tutorial-video";
+import "react-tutorial-video/dist/index.css";
 
 // The video you want to play
 const videoUrl = "https://vimeo.com/your-video-id";
@@ -105,6 +102,7 @@ This example shows a more realistic scenario where you might load a video `File`
 ```jsx
 import React, { useState } from "react";
 import { TutorialVideoPlayer, TutorialJsonData } from "react-tutorial-video";
+import "react-tutorial-video/dist/index.css";
 
 function AdvancedPlayer() {
   const [videoFile, setVideoFile] = (useState < File) | (null > null);
