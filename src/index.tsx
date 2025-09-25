@@ -61,8 +61,7 @@ const SpeechBubble = ({
   targetStyle,
   isClosing,
   videoContainer,
-  labels,
-  colors,
+  continueMessage,
 }: {
   text: string;
   hasNextButton: boolean;
@@ -70,79 +69,99 @@ const SpeechBubble = ({
   targetStyle: { left: string; top: string; width: string; height: string };
   isClosing: boolean;
   videoContainer: HTMLElement | null;
-  labels: Required<TutorialVideoPlayerProps["labels"]>;
-  colors: Required<TutorialVideoPlayerProps["colors"]>;
+  continueMessage: string;
 }) => {
   const bubbleRef = useRef<HTMLDivElement>(null);
   const [positionStyle, setPositionStyle] = useState<React.CSSProperties>({});
   const [arrowDirection, setArrowDirection] = useState<"left" | "right" | "top" | "bottom">("left");
 
-  // ... (useLayoutEffect logic remains the same)
   useLayoutEffect(() => {
     if (!bubbleRef.current || !videoContainer) return;
+
     const bubble = bubbleRef.current;
     const containerRect = videoContainer.getBoundingClientRect();
     const bubbleRect = bubble.getBoundingClientRect();
+
     const containerWidth = containerRect.width;
     const containerHeight = containerRect.height;
     const bubbleWidth = bubbleRect.width;
     const bubbleHeight = bubbleRect.height;
+
+    // Convert percentage-based targetStyle to pixel values
     const targetPx = {
       left: (parseFloat(targetStyle.left) / 100) * containerWidth,
       top: (parseFloat(targetStyle.top) / 100) * containerHeight,
       width: (parseFloat(targetStyle.width) / 100) * containerWidth,
       height: (parseFloat(targetStyle.height) / 100) * containerHeight,
     };
+
     const gap = 20;
+
     const targetCenterX = targetPx.left + targetPx.width / 2;
     const targetCenterY = targetPx.top + targetPx.height / 2;
-    let finalLeft: number, finalTop: number;
+
+    let finalLeft: number;
+    let finalTop: number;
     let finalDirection: "left" | "right" | "top" | "bottom";
+
     const spaceOnRight = containerWidth - (targetPx.left + targetPx.width + gap);
     const spaceOnLeft = targetPx.left - gap;
     const isTargetOnRightHalf = targetCenterX > containerWidth / 2;
 
+    // Implement intelligent positioning logic
     if (isTargetOnRightHalf && spaceOnLeft >= bubbleWidth) {
+      // Prefer left side if target is on the right
       finalLeft = spaceOnLeft - gap - bubbleWidth;
       finalTop = Math.max(0, Math.min(containerHeight - bubbleHeight, targetCenterY - bubbleHeight / 2));
-      finalDirection = "left";
+      finalDirection = "left"; // Bubble on left, arrow on its right, points right
     } else if (!isTargetOnRightHalf && spaceOnRight >= bubbleWidth) {
+      // Prefer right side if target is on the left
       finalLeft = targetPx.left + targetPx.width + gap;
       finalTop = Math.max(0, Math.min(containerHeight - bubbleHeight, targetCenterY - bubbleHeight / 2));
-      finalDirection = "right";
-    } else if (spaceOnRight >= bubbleWidth) {
+      finalDirection = "right"; // Bubble on right, arrow on its left, points left
+    }
+    // Fallback logic
+    else if (spaceOnRight >= bubbleWidth) {
+      // Try right
       finalLeft = targetPx.left + targetPx.width + gap;
       finalTop = Math.max(0, Math.min(containerHeight - bubbleHeight, targetCenterY - bubbleHeight / 2));
       finalDirection = "right";
     } else if (spaceOnLeft >= bubbleWidth) {
+      // Try left
       finalLeft = spaceOnLeft - gap - bubbleWidth;
       finalTop = Math.max(0, Math.min(containerHeight - bubbleHeight, targetCenterY - bubbleHeight / 2));
       finalDirection = "left";
     } else if (targetPx.top - gap - bubbleHeight >= 0) {
+      // Try top
       finalLeft = Math.max(0, Math.min(containerWidth - bubbleWidth, targetCenterX - bubbleWidth / 2));
       finalTop = targetPx.top - gap - bubbleHeight;
-      finalDirection = "bottom";
+      finalDirection = "bottom"; // Bubble on top, arrow on its bottom, points down
     } else {
+      // Use bottom
       finalLeft = Math.max(0, Math.min(containerWidth - bubbleWidth, targetCenterX - bubbleWidth / 2));
       finalTop = targetPx.top + targetPx.height + gap;
-      finalDirection = "top";
+      finalDirection = "top"; // Bubble on bottom, arrow on its top, points up
     }
 
-    setPositionStyle({ left: `${finalLeft}px`, top: `${finalTop}px` });
+    setPositionStyle({
+      left: `${finalLeft}px`,
+      top: `${finalTop}px`,
+    });
     setArrowDirection(finalDirection);
   }, [targetStyle, text, videoContainer]);
 
-  // ... (getArrowClasses logic remains the same)
   const getArrowClasses = () => {
+    // Note on direction: "left" means the bubble is on the left, so its arrow is on the right pointing right.
     const baseClasses = "absolute w-0 h-0 z-10";
+
     switch (arrowDirection) {
-      case "right":
+      case "right": // Bubble is on the RIGHT, arrow points LEFT
         return `${baseClasses} left-0 top-1/2 -translate-x-full -translate-y-1/2 border-l-0 border-r-[16px] border-t-[12px] border-b-[12px] border-r-slate-700 border-t-transparent border-b-transparent`;
-      case "left":
+      case "left": // Bubble is on the LEFT, arrow points RIGHT
         return `${baseClasses} right-0 top-1/2 translate-x-full -translate-y-1/2 border-r-0 border-l-[16px] border-t-[12px] border-b-[12px] border-l-slate-700 border-t-transparent border-b-transparent`;
-      case "top":
+      case "top": // Bubble is on the BOTTOM, arrow points UP
         return `${baseClasses} left-1/2 top-0 -translate-x-1/2 -translate-y-full border-b-0 border-t-[16px] border-l-[12px] border-r-[12px] border-t-slate-700 border-l-transparent border-r-transparent`;
-      case "bottom":
+      case "bottom": // Bubble is on the TOP, arrow points DOWN
         return `${baseClasses} left-1/2 bottom-0 -translate-x-1/2 translate-y-full border-t-0 border-b-[16px] border-l-[12px] border-r-[12px] border-b-slate-700 border-l-transparent border-r-transparent`;
       default:
         return baseClasses;
@@ -151,28 +170,27 @@ const SpeechBubble = ({
 
   const animationClass = isClosing ? "animate-fade-out" : "animate-fade-in";
 
-  // Note: For a real library, you'd inject CSS or use a CSS-in-JS solution instead of Tailwind classes
-  // to avoid forcing Tailwind on the consumer. For simplicity, we keep them but this is a key consideration.
   return (
     <div
       ref={bubbleRef}
-      className={`absolute w-80 p-6 bg-slate-700/95 backdrop-blur-sm border border-slate-600 text-white rounded-2xl shadow-2xl z-50 ${animationClass}`}
+      className={`absolute w-80 p-6 backdrop-blur-sm border border-slate-600 text-white rounded-2xl shadow-2xl z-50 ${animationClass}`}
       style={positionStyle}
     >
+      {/* Arrow */}
       <div className={getArrowClasses()}></div>
-      <div
-        className="absolute inset-0 rounded-2xl blur-xl opacity-50 -z-10"
-        style={{ background: `linear-gradient(to right, ${colors!.primary}20, ${colors!.secondary}20)` }}
-      ></div>
+
+      {/* Glow effect */}
+      <div className="absolute inset-0 rounded-2xl bg-blue-500/20 blur-xl opacity-50 -z-10"></div>
+
       <div className="relative">
         <p className="mb-4 text-base leading-relaxed text-slate-100">{text}</p>
+
         {hasNextButton && (
           <button
             onClick={onNext}
-            className="w-full flex items-center justify-center gap-2 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
-            style={{ background: `linear-gradient(to right, ${colors!.primary}, ${colors!.secondary})` }}
+            className="w-full flex items-center justify-center gap-2 bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
-            <span>{labels!.continue}</span>
+            <span>{continueMessage}</span>
             <MoveRight className="w-5 h-5" />
           </button>
         )}
@@ -220,13 +238,9 @@ const SegmentedTimeline = ({
             progressInSegment = ((currentTime - segment.start) / segmentDuration) * 100;
 
           return (
-            <div
-              key={index}
-              className="relative bg-white/20 rounded-full overflow-hidden"
-              style={{ width: `${segmentWidth}%` }}
-            >
+            <div key={index} className="relative bg-white/20 overflow-hidden" style={{ width: `${segmentWidth}%` }}>
               <div
-                className="h-full transition-all duration-300 ease-out rounded-full"
+                className="h-full transition-all duration-300 ease-out"
                 style={{ width: `${progressInSegment}%`, backgroundColor: primaryColor }}
               />
             </div>
@@ -566,8 +580,7 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
           targetStyle={speechBubbleTarget}
           isClosing={isBubbleClosing}
           videoContainer={videoContainerRef.current}
-          labels={labels}
-          colors={colors}
+          continueMessage={labels.continue}
         />
       </div>
     );
