@@ -43,6 +43,6 @@ export interface StopPoint {
 }
 
 export interface TutorialData {
-  version: "1.1";
+  version: string;
   stopPoints: StopPoint[];
 }
