@@ -630,7 +630,7 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
         )}
       </div>
 
-      {showTimeline && tutorialData && duration > 0 && (
+      {showTimeline && tutorialData && (
         <div className="p-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl">
           <SegmentedTimeline
             duration={duration}
