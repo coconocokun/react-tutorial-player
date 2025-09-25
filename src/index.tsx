@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useRef, useMemo, useEffect, useLayoutEffect, useCallback } from "react";
 import ReactPlayer from "react-player";
 import { RefreshCw, MoveRight, Play } from "lucide-react";
@@ -194,7 +192,6 @@ const SegmentedTimeline = ({
   stopPoints: StopPoint[];
   primaryColor: string;
 }) => {
-  // ... (Component logic is the same)
   if (duration === 0) return null;
   const segments = useMemo(() => {
     const newSegments = [];
@@ -240,6 +237,32 @@ const SegmentedTimeline = ({
   );
 };
 
+const getHighlightStyle = (area: InteractionArea): React.CSSProperties => {
+  switch (area.type) {
+    case "box":
+    case "oval":
+      if (!area.box) return {};
+      return {
+        left: `${area.box.x * 100}%`,
+        top: `${area.box.y * 100}%`,
+        width: `${area.box.width * 100}%`,
+        height: `${area.box.height * 100}%`,
+      };
+    case "polygon":
+      if (!area.points || area.points.length != 4) return {};
+      const xs = area.points.map((p) => p.x);
+      const ys = area.points.map((p) => p.y);
+      return {
+        left: `${Math.min(...xs) * 100}%`,
+        top: `${Math.min(...ys) * 100}%`,
+        width: `${(Math.max(...xs) - Math.min(...xs)) * 100}%`,
+        height: `${(Math.max(...ys) - Math.min(...ys)) * 100}%`,
+      };
+    default:
+      return {};
+  }
+};
+
 const HighlightRenderer = ({
   area,
   videoRef,
@@ -251,22 +274,34 @@ const HighlightRenderer = ({
   onClick: () => void;
   primaryColor: string;
 }) => {
-  // ... (HighlightRenderer logic is largely the same, but we pass the primary color for borders/strokes)
   const [videoDims, setVideoDims] = useState({ width: 0, height: 0 });
 
   useLayoutEffect(() => {
     const updateDimensions = () => {
-      if (videoRef.current?.wrapper) {
-        const element = videoRef.current.wrapper.firstChild;
+      const player = videoRef.current;
+      if (player) {
+        // Handle different player types
+        let element: HTMLVideoElement | null = null;
+
+        if ("getBoundingClientRect" in player) {
+          // Direct HTML element
+          element = player;
+        }
+
         if (element) {
           const rect = element.getBoundingClientRect();
           setVideoDims({ width: rect.width, height: rect.height });
         }
       }
     };
+
+    // Update dimensions initially and on resize
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
+
+    // Also update when the video loads or changes
     const timer = setTimeout(updateDimensions, 100);
+
     return () => {
       window.removeEventListener("resize", updateDimensions);
       clearTimeout(timer);
@@ -276,32 +311,6 @@ const HighlightRenderer = ({
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!area.hasNextButton) onClick();
-  };
-
-  const getHighlightStyle = (area: InteractionArea): React.CSSProperties => {
-    switch (area.type) {
-      case "box":
-      case "oval":
-        if (!area.box) return {};
-        return {
-          left: `${area.box.x * 100}%`,
-          top: `${area.box.y * 100}%`,
-          width: `${area.box.width * 100}%`,
-          height: `${area.box.height * 100}%`,
-        };
-      case "polygon":
-        if (!area.points || area.points.length != 4) return {};
-        const xs = area.points.map((p) => p.x);
-        const ys = area.points.map((p) => p.y);
-        return {
-          left: `${Math.min(...xs) * 100}%`,
-          top: `${Math.min(...ys) * 100}%`,
-          width: `${(Math.max(...xs) - Math.min(...xs)) * 100}%`,
-          height: `${(Math.max(...ys) - Math.min(...ys)) * 100}%`,
-        };
-      default:
-        return {};
-    }
   };
 
   switch (area.type) {
@@ -373,56 +382,35 @@ const HighlightRenderer = ({
 const getSpeechBubbleTargetStyle = (
   area: InteractionArea
 ): { left: string; top: string; width: string; height: string } => {
-  // ... (This helper function remains the same)
-  const getHighlightStyle = (area: InteractionArea): React.CSSProperties => {
-    switch (area.type) {
-      case "box":
-      case "oval":
-        if (!area.box) return {};
-        return {
-          left: `${area.box.x * 100}%`,
-          top: `${area.box.y * 100}%`,
-          width: `${area.box.width * 100}%`,
-          height: `${area.box.height * 100}%`,
-        };
-      case "polygon":
-        if (!area.points || area.points.length != 4) return {};
-        const xs = area.points.map((p) => p.x);
-        const ys = area.points.map((p) => p.y);
-        return {
-          left: `${Math.min(...xs) * 100}%`,
-          top: `${Math.min(...ys) * 100}%`,
-          width: `${(Math.max(...xs) - Math.min(...xs)) * 100}%`,
-          height: `${(Math.max(...ys) - Math.min(...ys)) * 100}%`,
-        };
-      default:
-        return {};
-    }
-  };
-
   switch (area.type) {
     case "box":
     case "oval": {
       const style = getHighlightStyle(area);
       return {
-        left: style.left as string,
-        top: style.top as string,
-        width: style.width as string,
-        height: style.height as string,
+        left: typeof style.left === "string" ? style.left : "0px",
+        top: typeof style.top === "string" ? style.top : "0px",
+        width: typeof style.width === "string" ? style.width : "0px",
+        height: typeof style.height === "string" ? style.height : "0px",
       };
     }
     case "polygon": {
-      if (!area.points || area.points.length != 4) return { left: "0px", top: "0px", width: "0px", height: "0px" };
+      if (!area.points || area.points.length != 4) {
+        return { left: "0px", top: "0px", width: "0px", height: "0px" };
+      }
       const centroid = area.points.reduce((acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }), { x: 0, y: 0 });
       centroid.x /= area.points.length;
       centroid.y /= area.points.length;
-      return { left: `${centroid.x * 100}%`, top: `${centroid.y * 100}%`, width: "0px", height: "0px" };
+      return {
+        left: `${centroid.x * 100}%`,
+        top: `${centroid.y * 100}%`,
+        width: "0px",
+        height: "0px",
+      };
     }
     default:
       return { left: "0px", top: "0px", width: "0px", height: "0px" };
   }
 };
-
 // =================================================================
 // MAIN COMPONENT
 // =================================================================
@@ -507,10 +495,8 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
   const handleDuration = useCallback((duration: number) => setDuration(duration), []);
 
   const handleReady = useCallback((player: HTMLVideoElement) => {
-    if (player) {
-      if (player && player.videoWidth && player.videoHeight > 0) {
-        setVideoAspectRatio(`${player.videoWidth} / ${player.videoHeight}`);
-      }
+    if (player && player.videoWidth && player.videoHeight > 0) {
+      setVideoAspectRatio(`${player.videoWidth} / ${player.videoHeight}`);
     }
   }, []);
 
@@ -546,13 +532,15 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
   }, [activeStopPoint, isBubbleClosing, activeAreaIndex, onNextInteraction]);
 
   const handleReplay = useCallback(() => {
-    videoRef.current!.currentTime = 0;
-    setCurrentTime(0);
-    nextStopPointIndex.current = 0;
-    setIsFinished(false);
-    setActiveStopPoint(null);
-    setHasStarted(false);
-    setIsPlaying(false);
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+      setCurrentTime(0);
+      nextStopPointIndex.current = 0;
+      setIsFinished(false);
+      setActiveStopPoint(null);
+      setHasStarted(false);
+      setIsPlaying(false);
+    }
   }, []);
 
   const renderTutorialOverlay = () => {
