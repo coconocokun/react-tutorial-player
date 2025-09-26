@@ -32,6 +32,15 @@ Install the package using npm:
 npm install react-tutorial-video
 ```
 
+## Workflow
+
+1. Upload your video on Vimeo
+2. Go to the demo page
+3. On the editor page, paste your Vimeo video URL
+4. Add stop points and text
+5. Download the json file you created
+6. Pass the Vimeo URL and JSON data to TutorialVideoPlayer component
+
 ## 🚀 Usage
 
 The component requires two main props: `videoSource` and `TutorialJsonData`.

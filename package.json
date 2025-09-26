@@ -1,6 +1,6 @@
 {
   "name": "react-tutorial-video",
-  "version": "1.0.12",
+  "version": "1.1.0",
   "description": "A React component to play videos with interactive overlays based on a JSON configuration.",
   "repository": {
     "url": "git+https://github.com/coconocokun/react-tutorial-player.git",
@@ -26,9 +26,11 @@
   "license": "MIT",
   "dependencies": {
     "lucide-react": "^0.544.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
     "react-player": "^3.3.3"
+  },
+  "peerDependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.13",
