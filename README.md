@@ -5,7 +5,7 @@
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/react-interactive-video.svg)](https://bundlephobia.com/result?p=react-tutorial-video)
 [![License](https://img.shields.io/npm/l/react-interactive-video.svg)](https://github.com/coconocokun/react-tutorial-video/blob/main/LICENSE)
 
-A fully-featured React component for creating interactive video tutorials. Guide users through a video with text overlays, highlights, and guided steps, all configured through a simple JSON file. Perfect for product demos, user onboarding, and educational content.
+A fully-featured React component for creating interactive video tutorials. Guide users through a video with text overlays, highlights, and guided steps, all configured through a simple JSON file. Perfect for product demos, user onboarding, and educational content. It's completely free!
 
 ---
 
@@ -156,6 +156,7 @@ function AdvancedPlayer() {
 | `TutorialJsonData`   | `TutorialJsonData`          | Yes      | `undefined`                                    | The parsed JSON object containing the tutorial steps.                                                   |
 | `labels`             | `object`                    | No       | `{ start, continue, complete, replay }`        | An object with string values to override the default text for UI elements.                              |
 | `colors`             | `object`                    | No       | `{ primary: '#3B82F6', secondary: '#8B5CF6' }` | An object with `primary` and `secondary` hex color strings to theme the player.                         |
+| `fallbackUrl`        | `string`                    | No       | `undefined`                                    | The URL of the video when tutorial interaction is not possible (e.g. on mobile device).                 |
 | `showTimeline`       | `boolean`                   | No       | `true`                                         | If `false`, the segmented progress timeline below the video will be hidden.                             |
 | `onTutorialStart`    | `() => void`                | No       | `undefined`                                    | A callback function that fires when the user clicks the initial "Start" button.                         |
 | `onTutorialComplete` | `() => void`                | No       | `undefined`                                    | A callback function that fires when the video ends after all stop points have been completed.           |
@@ -175,7 +176,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📑 ToDo
 
-- [ ] Add custom styling
-- [ ] Remove tailwindcss dependencies
-- [ ] Include editor
-- [x] Fallback video
+[ ] Add custom styling
+[ ] Remove tailwindcss dependencies
+[ ] Include editor
+[x] Fallback video

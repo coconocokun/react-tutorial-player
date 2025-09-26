@@ -45,7 +45,7 @@ export interface TutorialVideoPlayerProps {
    * @default true
    */
   showTimeline?: boolean;
-  key?: string;
+  uniqueKey?: string;
   fallbackUrl?: string;
   /** Callback function triggered when the tutorial starts. */
   onTutorialStart?: () => void;
@@ -439,7 +439,7 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
   labels: customLabels,
   colors: customColors,
   showTimeline = true,
-  key,
+  uniqueKey,
   fallbackUrl,
   onTutorialStart,
   onTutorialComplete,
@@ -604,11 +604,11 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
   }
 
   if (isMobile && fallbackUrl) {
-    return <FallbackPlayer videoUrl={fallbackUrl} playerKey={`fallback-${key}`} />;
+    return <FallbackPlayer videoUrl={fallbackUrl} playerKey={`fallback-${uniqueKey}`} />;
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6" key={key}>
+    <div className="w-full max-w-6xl mx-auto space-y-6" key={uniqueKey}>
       <div className="relative group">
         <div
           ref={videoContainerRef}
@@ -626,7 +626,7 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
             width="100%"
             height="100%"
             className="absolute top-0 left-0"
-            key={`player-${key}`}
+            key={`player-${uniqueKey}`}
           />
 
           {!hasStarted && !isFinished && (
