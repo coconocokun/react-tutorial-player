@@ -178,3 +178,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Add custom styling
 - [ ] Remove tailwindcss dependencies
 - [ ] Include editor
+- [x] Fallback video

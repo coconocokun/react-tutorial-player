@@ -3,6 +3,8 @@ import ReactPlayer from "react-player";
 import { RefreshCw, MoveRight, Play } from "lucide-react";
 import { InteractionArea, StopPoint } from "./types";
 import "./output.css";
+import { useMediaQuery } from "./hooks/useMediaQuery";
+import FallbackPlayer from "@/components/FallbackPlayer";
 
 // Helper components (SpeechBubble, SegmentedTimeline, etc.) are moved inside or below the main component.
 // For a larger library, you would place them in `src/components/` and import them.
@@ -43,6 +45,8 @@ export interface TutorialVideoPlayerProps {
    * @default true
    */
   showTimeline?: boolean;
+  key?: string;
+  fallbackUrl?: string;
   /** Callback function triggered when the tutorial starts. */
   onTutorialStart?: () => void;
   /** Callback function triggered when the tutorial is completed. */
@@ -96,7 +100,7 @@ const SpeechBubble = ({
       height: (parseFloat(targetStyle.height) / 100) * containerHeight,
     };
 
-    const gap = 20;
+    const gap = 10;
 
     const targetCenterX = targetPx.left + targetPx.width / 2;
     const targetCenterY = targetPx.top + targetPx.height / 2;
@@ -435,6 +439,8 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
   labels: customLabels,
   colors: customColors,
   showTimeline = true,
+  key,
+  fallbackUrl,
   onTutorialStart,
   onTutorialComplete,
   onNextInteraction,
@@ -442,7 +448,7 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
   // Set default values for customizable props
   const labels = {
     start: "Start Interactive Tutorial",
-    continue: "Continue",
+    continue: "Next",
     complete: "Tutorial Complete!",
     replay: "Play Again",
     ...customLabels,
@@ -468,6 +474,8 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [videoAspectRatio, setVideoAspectRatio] = useState<string>("16 / 9");
+
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const videoUrl = useMemo(() => {
     if (!videoSource) return null;
@@ -595,8 +603,12 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
     );
   }
 
+  if (isMobile && fallbackUrl) {
+    return <FallbackPlayer videoUrl={fallbackUrl} playerKey={`fallback-${key}`} />;
+  }
+
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6">
+    <div className="w-full max-w-6xl mx-auto space-y-6" key={key}>
       <div className="relative group">
         <div
           ref={videoContainerRef}
@@ -614,6 +626,7 @@ export const TutorialVideoPlayer: React.FC<TutorialVideoPlayerProps> = ({
             width="100%"
             height="100%"
             className="absolute top-0 left-0"
+            key={`player-${key}`}
           />
 
           {!hasStarted && !isFinished && (
